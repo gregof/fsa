@@ -2,14 +2,16 @@
 File system auditor. Show changes after previous audit session. Work over git.
 
 ### Example
-`mkdir tmp
+```
+mkdir tmp
 touch tmp/1
 fbs.init
 fbs.status -> {"modified":[],"added":["1"],"deleted":[]}
 fbs.commit 
 fbs.status -> {"modified":[],"added":[],"deleted":[]}
 touch tmp/2
-fbs.status -> {"modified":[],"added":["2"],"deleted":[]}`
+fbs.status -> {"modified":[],"added":["2"],"deleted":[]}
+```
 
 ### init(dirname, callback)
 ```javascript
