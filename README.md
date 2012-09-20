@@ -1,21 +1,21 @@
-## fbs
-File system auditor. Show changes after previous audit session. Work over git.
+## fsa
+File system auditor. Shows changes after previous audit session. Works over git.
 
 ### Example
 ```
 mkdir tmp
 touch tmp/1
-fbs.init
-fbs.status -> {"modified":[],"added":["1"],"deleted":[]}
-fbs.commit 
-fbs.status -> {"modified":[],"added":[],"deleted":[]}
+fsa.init
+fsa.status -> {"modified":[],"added":["1"],"deleted":[]}
+fsa.commit 
+fsa.status -> {"modified":[],"added":[],"deleted":[]}
 touch tmp/2
-fbs.status -> {"modified":[],"added":["2"],"deleted":[]}
+fsa.status -> {"modified":[],"added":["2"],"deleted":[]}
 ```
 
 ### init(dirname, callback)
 ```javascript
-fbs.init('tmp', function (err) {
+fsa.init('tmp', function (err) {
 	if (err) {
 		console.log(err)
 	} else {
@@ -26,7 +26,7 @@ fbs.init('tmp', function (err) {
 
 ### status(dirname, callback)
 ```javascript
-fbs.status('tmp', function (err, status) {
+fsa.status('tmp', function (err, status) {
 	if (err) {
 		console.log(err)
 	} else {
@@ -37,7 +37,7 @@ fbs.status('tmp', function (err, status) {
 
 ### commit(dirname, callback)
 ```javascript
-fbs.commit('tmp', function (err) {
+fsa.commit('tmp', function (err) {
 	if (err) {
 		console.log(err)
 	} else {
