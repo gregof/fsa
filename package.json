@@ -9,7 +9,8 @@
   "version": "0.1.0",
   "dependencies": {},
   "devDependencies": {
-    "abc": "0.3.x"    
+    "abc": "0.3.x",
+    "tc": "0.4.1"
   },
   "optionalDependencies": {},
   "engines": {

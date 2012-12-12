@@ -1,5 +1,5 @@
 test:
-	node run.test.js
+	node ../node_modules/tc/bin/tc case
 
 init:
 	node -e "require('./../lib').init('.', function (err) {err && console.log(err)})"
@@ -17,6 +17,7 @@ version:
 
 clean:
 	rm -rf .fsa
-	rm 1.js
+	rm -f 1.js
+	rm -rf tmp
 
 .PHONY : clean test init status commit
