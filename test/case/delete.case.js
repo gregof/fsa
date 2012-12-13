@@ -14,7 +14,7 @@
     "STATUS",
     "rm -rf tmp/sub",
     "STATUS"
-] 
+]
 //out
 {"modified":[],"added":[],"deleted":["1"]}
 {"modified":[],"added":[],"deleted":["sub/3"]}
