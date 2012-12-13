@@ -68,7 +68,13 @@
     }
 
     return {
-        exec: exec
+        exec: exec,
+        beforeEach: function (tc, callback) {
+            execCommand('mkdir tmp', tc, callback);
+        },
+        afterEach: function (tc, callback) {
+            execCommand('rm -rf tmp', tc, callback);
+        }
     };
 
 })();

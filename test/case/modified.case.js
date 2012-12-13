@@ -1,6 +1,5 @@
 //in
 [
-    "mkdir tmp",
     "INIT",
     "STATUS",
     "touch tmp/1",
@@ -11,8 +10,7 @@
     "touch tmp/sub/2",
     "COMMIT",
     "date > tmp/sub/2",
-    "STATUS",
-    "rm -rf tmp"
+    "STATUS"
 ]
 //out
 {"modified":[],"added":[],"deleted":[]}

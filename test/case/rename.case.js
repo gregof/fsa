@@ -1,6 +1,5 @@
 //in
 [
-    "mkdir tmp",
     "date > tmp/1",
     "INIT",
     "COMMIT",
@@ -14,8 +13,7 @@
     "mv tmp/sub/2 tmp/sub/22",
     "STATUS",
     "COMMIT",
-    "STATUS",
-    "rm -rf tmp"
+    "STATUS"
 ]
 //out
 {"modified":[],"added":["11"],"deleted":["1"]}

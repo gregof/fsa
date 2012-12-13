@@ -1,6 +1,5 @@
 //in
 [
-    "mkdir tmp",
     "touch tmp/1",
     "INIT",
     "git init tmp",
@@ -12,8 +11,7 @@
     "git init tmp/sub",
     "STATUS",
     "COMMIT",
-    "STATUS",
-    "rm -rf tmp"
+    "STATUS"
 ]
 //out
 {"modified":[],"added":["1"],"deleted":[]}
