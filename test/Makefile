@@ -1,5 +1,6 @@
 test:
 	node ../node_modules/tc/bin/tc case
+	node ../node_modules/tc/bin/tc case.git-dir
 
 init:
 	node -e "require('./../lib').init('.', function (err) {err && console.log(err)})"

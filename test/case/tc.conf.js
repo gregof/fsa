@@ -16,7 +16,12 @@
         abc.async.sequence(
             commands,
             function (command, callback) {
-                execCommand(command, tc, callback);
+                try {
+                    execCommand(command, tc, callback);
+                } catch (e) {
+                    tc.out(command + ':' + e);
+                    callback();
+                }
             },
             callback
         );
@@ -26,23 +31,44 @@
     function execCommand (command, tc, callback) {
         switch (command) {
             case "INIT":
-                fsa.init('tmp', function () {
+                fsa.init('tmp', function (err) {
+                    if (err) {
+                        tc.out(command + ':' + err);
+                    }
                     callback();
                 })
                 break;
             case "STATUS": 
                 fsa.status('tmp', function (err, status) {
-                    tc.out(JSON.stringify(status));
+                    if (err) {
+                        tc.out(command + ':' + err);
+                    } else {
+                        tc.out(JSON.stringify(status));
+                    }
+                    callback();
+                })
+                break;
+            case "ADD": 
+                fsa.add('tmp', function (err, status) {
+                    if (err) {
+                        tc.out(command + ':' + err);
+                    }
                     callback();
                 })
                 break;
             case "COMMIT": 
-                fsa.commit('tmp', function () {
+                fsa.commit('tmp', function (err) {
+                    if (err) {
+                        tc.out(command + ':' + err);
+                    }
                     callback();
                 })
                 break;
             case "GET_VERSION": 
                 fsa.version('tmp', function (err, version) {
+                    if (err) {
+                        tc.out(command + ':' + err);
+                    }
                     if (!version) {
                         tc.out('Empty version!')
                     }
@@ -52,17 +78,20 @@
                 break;
             case "CHECK_VERSION": 
                 fsa.version('tmp', function (err, version) {
-                    tc.out(tc.version == version ? 'same' : 'different');
+                    if (err) {
+                        tc.out(command + ':' + err);
+                    } else {
+                        tc.out(tc.version == version ? 'same' : 'different');
+                    }
                     callback();
                 })
                 break;
             default:
                 childProcess.exec(command, function (err, stdout, stderr) {
                     if (err) {
-                        console.log('ERROR:', err);
-                    } else {
-                        callback();
+                        tc.out(command + ':' + err);
                     }
+                    callback();
                 });
         }
     }

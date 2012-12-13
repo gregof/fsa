@@ -3,15 +3,18 @@
     "touch tmp/1",
     "INIT",
     "STATUS",
+    "ADD",
     "COMMIT",
     "STATUS",
     "mkdir tmp/sub",
     "touch tmp/sub/2",
     "STATUS",
+    "ADD",
     "COMMIT",
     "STATUS",
     "touch tmp/sub/3",
     "STATUS",
+    "ADD",
     "COMMIT",
     "STATUS"
 ]
