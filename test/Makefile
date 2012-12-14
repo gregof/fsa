@@ -1,6 +1,7 @@
 test:
 	node ../node_modules/tc/bin/tc case
 	node ../node_modules/tc/bin/tc case.git-dir
+	node ../node_modules/tc/bin/tc case.status-manager
 
 init:
 	node -e "require('./../lib').init('.', function (err) {err && console.log(err)})"
