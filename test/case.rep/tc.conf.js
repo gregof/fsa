@@ -1,5 +1,5 @@
 (function () {
-    var fsa = require(conf.fixPath('../../lib/index.js'));
+    var rep = require(conf.fixPath('../../lib/rep.js'));
     var childProcess = require('child_process');
     var abc = require('abc');
 
@@ -31,7 +31,7 @@
     function execCommand (command, tc, callback) {
         switch (command) {
             case "INIT":
-                fsa.init('tmp', function (err) {
+                rep.init('tmp', function (err) {
                     if (err) {
                         tc.out(command + ':' + err);
                     }
@@ -39,7 +39,7 @@
                 })
                 break;
             case "STATUS": 
-                fsa.status('tmp', function (err, status) {
+                rep.status('tmp', function (err, status) {
                     if (err) {
                         tc.out(command + ':' + err);
                     } else {
@@ -49,7 +49,7 @@
                 })
                 break;
             case "ADD": 
-                fsa.add('tmp', function (err, status) {
+                rep.add('tmp', function (err, status) {
                     if (err) {
                         tc.out(command + ':' + err);
                     }
@@ -57,7 +57,7 @@
                 })
                 break;
             case "COMMIT": 
-                fsa.commit('tmp', function (err) {
+                rep.commit('tmp', function (err) {
                     if (err) {
                         tc.out(command + ':' + err);
                     }
@@ -65,7 +65,7 @@
                 })
                 break;
             case "GET_VERSION": 
-                fsa.version('tmp', function (err, version) {
+                rep.version('tmp', function (err, version) {
                     if (err) {
                         tc.out(command + ':' + err);
                     }
@@ -77,7 +77,7 @@
                 })
                 break;
             case "CHECK_VERSION": 
-                fsa.version('tmp', function (err, version) {
+                rep.version('tmp', function (err, version) {
                     if (err) {
                         tc.out(command + ':' + err);
                     } else {

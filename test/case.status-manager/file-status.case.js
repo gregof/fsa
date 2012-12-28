@@ -1,7 +1,7 @@
 //in
-var fsa = require(tc.fixPath('../../lib/index.js'));
+var StatusManager = require(tc.fixPath('../../lib/status-manager.js')).StatusManager;
 
-var sm = new fsa.StatusManager({
+var sm = new StatusManager({
     added: ['a', 'b/', 'c'],
     deleted: ['d', 'sub/a'],
     modified: ['sub2/a', 'f', 'g']

@@ -2,9 +2,9 @@
     exec:'async',
     beforeEach: function (tc, callback) {
         
-        tc.callFSA = function exec (method, dir, options, callback) {
-            var fsa = require(conf.fixPath('../../lib/index.js'));
-            fsa[method](dir, options, function (err, data) {
+        tc.callRep = function exec (method, dir, options, callback) {
+            var rep = require(conf.fixPath('../../lib/rep.js'));
+            rep[method](dir, options, function (err, data) {
                 if (err) {
                     tc.out(err)
                 }
