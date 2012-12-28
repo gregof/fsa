@@ -2,6 +2,7 @@
 [
     "INIT",
     "touch tmp/1",
+    "GET_VERSION",    
     "ADD",
     "COMMIT",
     "GET_VERSION",

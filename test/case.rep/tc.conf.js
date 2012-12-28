@@ -66,9 +66,6 @@
                 break;
             case "GET_VERSION": 
                 rep.version('tmp', function (err, version) {
-                    if (err) {
-                        tc.out(command + ':' + err);
-                    }
                     if (!version) {
                         tc.out('Empty version!')
                     }
