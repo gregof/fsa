@@ -1,7 +1,7 @@
 # fsa
 Утилита позволяющая быстро узнать были ли изменения в определенной папке. Характерным примером использования является кеширование результатов сборки кода, с последующей инкрементальной пересборкой только изменившегося кода. Работает поверх git, так что для работы утилиты требуется предустановленный git.
 
-## Класс fsa.DirCahce
+## Класс fsa.DirCache
 ### new fsa.DirCachee(targetPath, cacheDirName)
 Создает новый инстанс кеша для папки `targetPath`. Служебная информация кеша будет помещена в папку `cacheDirName` внутри папки `targetPath`.
 ```javascript
@@ -97,7 +97,7 @@ fsa.rep.init('test', function (err) {
 Возвращает список изменений в папке:
 ```javascript
 {
- "added": [], // список добавленный файлов и папок
+ "added": [], // список добавленных файлов и папок
  "modified": [], // список изменившихся файлов
  "deleted": [] // список удаленных файлов
 }
@@ -135,7 +135,7 @@ fsa.rep.getVersion('test', function (err, version) {
 ```
 
 ##Пример
-В данном примере рассчитывается и выводится хеш для каждого файла в папке `'test'`.
+В данном примере рассчитывается и выводится хеш для каждого файла в текщей папке.
 ```javascript
 var fsa = require('fsa');
 var abc = require('abc');
@@ -143,7 +143,7 @@ var crypto = require('crypto');
 var path = require('path');
 
 var startDate = new Date();
-var dc = new fsa.DirCache('test', '.exmpl');
+var dc = new fsa.DirCache('.', '.exmpl');
 
 dc.load(function (data, changes) {
     processDir(data, changes, function (newData) {
