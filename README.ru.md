@@ -1,47 +1,141 @@
-## fsa
-Утилита позволяющая быстро узнать были ли изменения в определенной директории. Характерным примером использования является кеширование результатов сборки кода, с последующей инкрементальной пересборкой только изменившегося кода. Работает поверх git, так что для работы утилиты требуется предустановленный git.
+# fsa
+Утилита позволяющая быстро узнать были ли изменения в определенной папке. Характерным примером использования является кеширование результатов сборки кода, с последующей инкрементальной пересборкой только изменившегося кода. Работает поверх git, так что для работы утилиты требуется предустановленный git.
 
-###Принцип работы (TODO: кажется не нужно)
-При первом запуске все содержимое помечается как новое. После чего состояние запоминается. При следующем запуске расcчитываются изменения по отношению к предыдущему сохраненному состоянию.
+## Класс fsa.DirCahce
+### new fsa.DirCachee(targetPath, cacheDirName)
+Создает новый инстанс кеша для папки `targetPath`. Служебная информация кеша будет помещена в папку `cacheDirName` внутри папки `targetPath`.
+```javascript
+var dc = new fsa.DirCache('test', '.exmpl');
+```
+### dc.load(callback)
+Загружает закешированное состояние и привязанные к состоянию дополнительные данные. Одновременно рассчитывает изменения в папке по отношению к закешированному состоянию. По завершению работы будет вызван `callback` в который будут переданы данные `data`, привязанные к закешированному состаянию, и список изменений [`changes`](#fsarepgetchangespath-options-callback).
+```javascript
+dc.load(function (data, changes) {
+  if (!data) {
+    console.log('Кеш пустой');
+  } else {
+    console.log(JSON.stringify(data, null, '  '));
+  }
+  console.log('Changes:');
+  console.log(JSON.stringify(changes, null, '  '));
+})
+```
+### dc.save(data, callback)
+Сохраняет текущее состояние и привязанные к нему данные в кеш.
+```javascript
+var data =  {/* Данные которые нужно сохранить */}; 
+dc.save(data, function () {
+  console.log('Операция сохранения завершена.');
+})
+```
+### dc.remove(callback)
+Удаляет кеш.
+```javascript
+dc.remove(function () {
+  console.log('Операция удаления завершена.');
+})
+```
 
-###fsa.DirCache
-####Конструктор
-`fsa.DirCache(targetDir, cacheDirName)`
-Параметры:
-  * `targetDir` - Путь до целевой дирректории.
-  * `cacheDirName` - Имя для дирректории с кешом.
+## Класс fsa.ChangeManager
+### new fsa.ChangeManager(changes)
+Создает объект упрощающий работу со списком изменений [`changes`](#fsarepgetchangespath-options-callback).
+```javascript
+var cm = new fsa.ChangeManager(changes);
+```
+### cm.getFileStatus(fileName)
+Возвращает статус ранее закешированного файла. Возвращает строку 'D' если файл удален, 'M' если он изменился и '-' если остался без изменений.
+```javascript
+var status = cm.getFileStatus('test.js');
+switch (status) {
+  case 'D':
+    console.log('Файл удален.');
+    break;
+  case 'M':
+    console.log('Файл изменен.')
+    break;
+  case '-':
+    console.log('Файл не изменился.')
+}
+```
 
-####Методы
-  * `load(callback)` - Загружает закешированное состояние и привязанные к состоянию дополнительные данные. Одновременно рассчитывает изменения в дирректории по отношению к закешированному состоянию.
-    * `callback` - Функция, которая будет вызвана по завершению работы. Параметры которые будут в нее переданны:
-      * `data` - Данные привязанные к закешированному состоянию. При первом запуске будут равны null.
-      * `status` - Статус изменений в дирректории. TODO: описание формата status, а также примеры того как разные изменения на fs в нем отражаются
-  * `save(data, callback)` - Сохраняет текущее состояние и привязанные к нему данные в кеш.
-    * `data` - Данные которые нужно привязать к текущему состоянию.
-    * `callback` - Фунция, которая будет вызвана по окончанию работы.
-  * `remove(callback)` - Удалить сохраненное закешированное состояние.
-    * `callback` - Фунция, которая будет вызвана по окончанию работы.
+### cm.getAddedFiles()
+Возвращает список добавленных файлов.
+```javascript
+console.log('Список добавленных файлов:')
+cm.getAddedFiles().forEach(function (newFileName) {
+  console.log(newFileName);
+})
+```
+### cm.getAddedDirs()
+Возвращает список добавленных папок.
+```javascript
+console.log('Список добавленных папок:')
+cm.getAddedDirs().forEach(function (newDir) {
+  console.log(newDir);
+})
+```
 
-###fsa.StatusManager
-####Конструктор
-`fsa.StatusManager(status)`
-  * `status` - Статус изменений.
-####Методы
-  * `getFileStatus(fileName)` - Возвращает статус конкретного файла. Возвращает строку 'D' если файл удален, 'M' если он изменился и '-' если остался без изменений.
-  * `getAddedFiles()` - Возвращает список добавленных файлов.
-  * `getAddedDirs()` - Возвращает список добавленных дирректорий.
+## fsa.rep
 
-###fsa.rep
-Содержит методы для работы с репозиторием.
-####Методы
-  * `init(dir, options, callback)` -> err
-  * `status(dir, options, callback)` -> err, status
-  * `add(dir, options, callback)` -> err 
-  * `commit(dir, options, callback)` -> err
-  * `version(dir, options, callback)` -> err, version
+Методы для работы с репозиторием. Все методы принимают одни и теже параметры:
+  * `path` - Путь до папки в которой нужно создать репозиторий.
+  * `options` - Опции для репозитория.
+    * `repDir` - Имя папки в которой будут храниться служебные файлы репозитория. По умолчанию `'.fsa'`.
+  * `callback` - Функция, которая будет вызвана по окончанию работы.
 
+Метод `fsa.rep.init` должен быть вызван раньше любого другого.
+
+### fsa.rep.init(path, [options], callback)
+Инициирует работу с репозиторием.
+```javascript
+fsa.rep.init('test', function (err) {
+  if (err) throw err;
+  console.log('Репозиторий создан.')
+}
+```
+### fsa.rep.getChanges(path, [options], callback)
+Возвращает список изменений в папке:
+```javascript
+{
+ "added": [], // список добавленный файлов и папок
+ "modified": [], // список изменившихся файлов
+ "deleted": [] // список удаленных файлов
+}
+```
+```javascript
+fsa.rep.getChanges('test', function (err, changes) {
+  if (err) throw err;
+  console.log('Changes:');
+  console.log(JSON.stringify(changes, null, '  '));
+}
+```
+### fsa.rep.add(path, [options], callback)
+Добавляет текущее состояние папки в готовящийся комит.
+```javascript
+fsa.rep.add('test', function (err) {
+  if (err) throw err;
+  console.log('Изменения готовы к комиту.')
+}
+```
+### fsa.rep.commit(path, [options], callback)
+Осуществляет комит в репозиторий.
+```javascript
+fsa.rep.commit('test', function (err) {
+  if (err) throw err;
+  console.log('Изменения добавлены в репозиторий.')
+}
+```
+### fsa.rep.getVersion(path, [options], callback)
+Возврает текущую версию репозитория.
+```javascript
+fsa.rep.getVersion('test', function (err, version) {
+  if (err) throw err;
+  console.log('Текущая версия репозитория:' + version);
+}
+```
 
 ##Пример
+В данном примере рассчитывается и выводится хеш для каждого файла в папке `'test'`.
 ```javascript
 var fsa = require('fsa');
 var abc = require('abc');
@@ -49,10 +143,10 @@ var crypto = require('crypto');
 var path = require('path');
 
 var startDate = new Date();
-var dc = new fsa.DirCache('../test', '.exmpl');
+var dc = new fsa.DirCache('test', '.exmpl');
 
-dc.load(function (data, status) {
-    processDir(data, status, function (newData) {
+dc.load(function (data, changes) {
+    processDir(data, changes, function (newData) {
         dc.save(newData, function () {
             console.log(JSON.stringify(newData, null, '  '))
             console.log('Done. Time - ' + (new Date() - startDate));
@@ -60,9 +154,9 @@ dc.load(function (data, status) {
     });
 });    
 
-function processDir (cachedData, status, callback) {
+function processDir (cachedData, changes, callback) {
     var newData = [];
-    var sm = new fsa.StatusManager(status);
+    var sm = new fsa.ChangeManager(changes);
     abc.async.forEach(
         [
             function (callback) {
