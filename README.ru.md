@@ -77,15 +77,15 @@ cm.getAddedDirs().forEach(function (newDir) {
 
 ## fsa.rep
 
-Методы для работы с репозиторием. Все методы принимают одни и теже параметры:
-  * `path` - Путь до папки в которой нужно создать репозиторий.
+Методы для работы с репозиторием. Все методы принимают параметры:
+  * `dir` - Путь до папки в которой нужно создать репозиторий.
   * `options` - Опции для репозитория.
     * `repDir` - Имя папки в которой будут храниться служебные файлы репозитория. По умолчанию `'.fsa'`.
   * `callback` - Функция, которая будет вызвана по окончанию работы.
 
-Метод `fsa.rep.init` должен быть вызван раньше любого другого.
+Метод `fsa.rep.init` созадет в указаной папке git репозиторий, большинстов действий возможно только после этого.
 
-### fsa.rep.init(path, [options], callback)
+### fsa.rep.init(dir, [options], callback)
 Инициирует работу с репозиторием.
 ```javascript
 fsa.rep.init('test', function (err) {
@@ -93,7 +93,7 @@ fsa.rep.init('test', function (err) {
   console.log('Репозиторий создан.')
 }
 ```
-### fsa.rep.getChanges(path, [options], callback)
+### fsa.rep.getChanges(dir, [options], callback)
 Возвращает список изменений в папке:
 ```javascript
 {
@@ -109,15 +109,7 @@ fsa.rep.getChanges('test', function (err, changes) {
   console.log(JSON.stringify(changes, null, '  '));
 }
 ```
-### fsa.rep.add(path, [options], callback)
-Добавляет текущее состояние папки в готовящийся комит.
-```javascript
-fsa.rep.add('test', function (err) {
-  if (err) throw err;
-  console.log('Изменения готовы к комиту.')
-}
-```
-### fsa.rep.commit(path, [options], callback)
+### fsa.rep.commit(dir, [options], callback)
 Осуществляет комит в репозиторий.
 ```javascript
 fsa.rep.commit('test', function (err) {
@@ -125,7 +117,7 @@ fsa.rep.commit('test', function (err) {
   console.log('Изменения добавлены в репозиторий.')
 }
 ```
-### fsa.rep.getVersion(path, [options], callback)
+### fsa.rep.getVersion(dir, [options], callback)
 Возврает текущую версию репозитория.
 ```javascript
 fsa.rep.getVersion('test', function (err, version) {
@@ -134,8 +126,17 @@ fsa.rep.getVersion('test', function (err, version) {
 }
 ```
 
+### fsa.rep.execGitCommand(command, dir, [options], callback)
+Выполняет указанную команду git.
+```javascript
+this.execGitCommand('rm log.txt', 'test', function (err) {
+  if (err) throw err;
+  console.log('Файл log.txt удален.');
+}
+```
+
 ##Пример
-В данном примере рассчитывается и выводится хеш для каждого файла в текщей папке.
+В данном примере рассчитывается и выводится хеш для каждого файла в текущей папке.
 ```javascript
 var fsa = require('fsa');
 var abc = require('abc');
@@ -145,8 +146,8 @@ var path = require('path');
 var startDate = new Date();
 var dc = new fsa.DirCache('.', '.exmpl');
 
-dc.load(function (data, changes) {
-    processDir(data, changes, function (newData) {
+dc.load(function (data, changeManager) {
+    processDir(data, changeManager, function (newData) {
         dc.save(newData, function () {
             console.log(JSON.stringify(newData, null, '  '))
             console.log('Done. Time - ' + (new Date() - startDate));
@@ -154,23 +155,22 @@ dc.load(function (data, changes) {
     });
 });    
 
-function processDir (cachedData, changes, callback) {
+function processDir (cachedData, changeManager, callback) {
     var newData = [];
-    var sm = new fsa.ChangeManager(changes);
     abc.async.forEach(
         [
             function (callback) {
                 if (cachedData) {
-                    checkCachedFiles(cachedData, sm, newData, callback)
+                    checkCachedFiles(cachedData, changeManager, newData, callback)
                 } else {
                     callback();
                 }
             },
             function (callback) {
-                readFiles(sm.getAddedFiles(), newData, callback)
+                readFiles(changeManager.getAddedFiles(), newData, callback)
             },
             function (callback) {
-                readDirs(sm.getAddedDirs(), newData, callback)
+                readDirs(changeManager.getAddedDirs(), newData, callback)
             }
         ], 
         function () {
@@ -179,11 +179,11 @@ function processDir (cachedData, changes, callback) {
     );    
 }
 
-function checkCachedFiles (cachedData, sm, newData, callback) {
+function checkCachedFiles (cachedData, changeManager, newData, callback) {
     abc.async.forEach(
         cachedData,
         function (file, callback) {
-            var fileStatus = sm.getFileStatus(file.name);
+            var fileStatus = changeManager.getFileStatus(file.name);
             if (fileStatus === 'M') {
                 readFile(file.name, function (rereadFile) {
                     newData.push(rereadFile);
