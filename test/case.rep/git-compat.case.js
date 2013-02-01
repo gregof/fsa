@@ -3,17 +3,15 @@
     "touch tmp/1",
     "INIT",
     "git init tmp",
-    "STATUS",
-    "ADD",
+    "GET_CHANGES",
     "COMMIT",
-    "STATUS",
+    "GET_CHANGES",
     "mkdir tmp/sub",
     "touch tmp/sub/2",
     "git init tmp/sub",
-    "STATUS",
-    "ADD",
+    "GET_CHANGES",
     "COMMIT",
-    "STATUS"
+    "GET_CHANGES"
 ]
 //out
 {"modified":[],"added":["1"],"deleted":[]}

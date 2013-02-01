@@ -2,22 +2,22 @@
 Утилита позволяющая быстро узнать были ли изменения в определенной папке. Характерным примером использования является кеширование результатов сборки кода, с последующей инкрементальной пересборкой только изменившегося кода. Работает поверх git, так что для работы утилиты требуется предустановленный git.
 
 ## Класс fsa.DirCache
-### new fsa.DirCachee(targetPath, cacheDirName)
-Создает новый инстанс кеша для папки `targetPath`. Служебная информация кеша будет помещена в папку `cacheDirName` внутри папки `targetPath`.
+### new fsa.DirCachee(targetDir, cacheDirName)
+Создает новый инстанс кеша для папки `targetDir`. Служебная информация кеша будет помещена в папку `cacheDirName` внутри папки `targetDir`.
 ```javascript
 var dc = new fsa.DirCache('test', '.exmpl');
 ```
 ### dc.load(callback)
-Загружает закешированное состояние и привязанные к состоянию дополнительные данные. Одновременно рассчитывает изменения в папке по отношению к закешированному состоянию. По завершению работы будет вызван `callback` в который будут переданы данные `data`, привязанные к закешированному состаянию, и список изменений [`changes`](#fsarepgetchangespath-options-callback).
+Загружает закешированное состояние и привязанные к состоянию дополнительные данные. Одновременно рассчитывает изменения в папке по отношению к закешированному состоянию. По завершению работы будет вызван `callback` в который будут переданы данные `data`, привязанные к закешированному состоянию, и менеджер изменений [`changeManager`](#fsarepgetchangespath-options-callback).
 ```javascript
-dc.load(function (data, changes) {
+dc.load(function (data, changeManager) {
   if (!data) {
     console.log('Кеш пустой');
   } else {
     console.log(JSON.stringify(data, null, '  '));
   }
   console.log('Changes:');
-  console.log(JSON.stringify(changes, null, '  '));
+  console.log(JSON.stringify(changeManager.changes, null, '  '));
 })
 ```
 ### dc.save(data, callback)

@@ -38,20 +38,12 @@
                     callback();
                 })
                 break;
-            case "STATUS": 
-                rep.status('tmp', function (err, status) {
+            case "GET_CHANGES": 
+                rep.getChanges('tmp', function (err, changes) {
                     if (err) {
                         tc.out(command + ':' + err);
                     } else {
-                        tc.out(JSON.stringify(status));
-                    }
-                    callback();
-                })
-                break;
-            case "ADD": 
-                rep.add('tmp', function (err, status) {
-                    if (err) {
-                        tc.out(command + ':' + err);
+                        tc.out(JSON.stringify(changes));
                     }
                     callback();
                 })
@@ -65,7 +57,7 @@
                 })
                 break;
             case "GET_VERSION": 
-                rep.version('tmp', function (err, version) {
+                rep.getVersion('tmp', function (err, version) {
                     if (!version) {
                         tc.out('Empty version!')
                     }
@@ -74,7 +66,7 @@
                 })
                 break;
             case "CHECK_VERSION": 
-                rep.version('tmp', function (err, version) {
+                rep.getVersion('tmp', function (err, version) {
                     if (err) {
                         tc.out(command + ':' + err);
                     } else {

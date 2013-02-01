@@ -1,18 +1,16 @@
 //in
 [
     "INIT",
-    "STATUS",
+    "GET_CHANGES",
     "touch tmp/1",
-    "ADD",
     "COMMIT",
     "date > tmp/1",
-    "STATUS",
+    "GET_CHANGES",
     "mkdir tmp/sub",
     "touch tmp/sub/2",
-    "ADD",
     "COMMIT",
     "date > tmp/sub/2",
-    "STATUS"
+    "GET_CHANGES"
 ]
 //out
 {"modified":[],"added":[],"deleted":[]}

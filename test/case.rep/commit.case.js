@@ -2,21 +2,18 @@
 [
     "touch tmp/1",
     "INIT",
-    "STATUS",
-    "ADD",
+    "GET_CHANGES",
     "COMMIT",
-    "STATUS",
+    "GET_CHANGES",
     "mkdir tmp/sub",
     "touch tmp/sub/2",
-    "STATUS",
-    "ADD",
+    "GET_CHANGES",
     "COMMIT",
-    "STATUS",
+    "GET_CHANGES",
     "touch tmp/sub/3",
-    "STATUS",
-    "ADD",
+    "GET_CHANGES",
     "COMMIT",
-    "STATUS"
+    "GET_CHANGES"
 ]
 //out
 {"modified":[],"added":["1"],"deleted":[]}

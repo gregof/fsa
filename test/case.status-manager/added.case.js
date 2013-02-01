@@ -1,14 +1,14 @@
 //in
-var StatusManager = require(tc.fixPath('../../lib/status-manager.js')).StatusManager;
+var ChangeManager = require(tc.fixPath('../../lib/change-manager.js')).ChangeManager;
 
-var sm = new StatusManager({
+var cm = new ChangeManager({
     added: ['a', 'b/', 'c'],
     deleted: [],
     modified: []
 });
 
-tc.out(sm.getAddedFiles());
-tc.out(sm.getAddedDirs());
+tc.out(cm.getAddedFiles());
+tc.out(cm.getAddedDirs());
 //out
 a,c
 b/

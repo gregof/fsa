@@ -1,20 +1,20 @@
 //in
-var StatusManager = require(tc.fixPath('../../lib/status-manager.js')).StatusManager;
+var ChangeManager = require(tc.fixPath('../../lib/change-manager.js')).ChangeManager;
 
-var sm = new StatusManager({
+var cm = new ChangeManager({
     added: ['a', 'b/', 'c'],
     deleted: ['d', 'sub/a'],
     modified: ['sub2/a', 'f', 'g']
 });
 
-tc.out(sm.getFileStatus('file'));
-tc.out(sm.getFileStatus('b'));
-tc.out(sm.getFileStatus('a'));
-tc.out(sm.getFileStatus('sub/a'));
-tc.out(sm.getFileStatus('sub2/a'));
-tc.out(sm.getFileStatus('d'));
-tc.out(sm.getFileStatus('f'));
-tc.out(sm.getFileStatus('g'));
+tc.out(cm.getFileStatus('file'));
+tc.out(cm.getFileStatus('b'));
+tc.out(cm.getFileStatus('a'));
+tc.out(cm.getFileStatus('sub/a'));
+tc.out(cm.getFileStatus('sub2/a'));
+tc.out(cm.getFileStatus('d'));
+tc.out(cm.getFileStatus('f'));
+tc.out(cm.getFileStatus('g'));
 //out
 -
 -

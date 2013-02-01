@@ -9,19 +9,16 @@ abc.async.sequence(
             tc.callRep('init', localPath, {repDir: '.my2'}, callback);
         },
         function (callback) {
-            tc.callRep('status', localPath, {repDir: '.my2'}, function (status) {
-                tc.out(JSON.stringify(status));
+            tc.callRep('getChanges', localPath, {repDir: '.my2'}, function (changes) {
+                tc.out(JSON.stringify(changes));
                 callback();
             });
-        },
-        function (callback) {
-            tc.callRep('add', localPath, {repDir: '.my2'}, callback);
         },
         function (callback) {
             tc.callRep('commit', localPath, {repDir: '.my2'}, callback);
         },
         function (callback) {
-            tc.callRep('version', localPath, {repDir: '.my2'}, function (version) {
+            tc.callRep('getVersion', localPath, {repDir: '.my2'}, function (version) {
                 tc.out(version.length);
                 callback();
             });

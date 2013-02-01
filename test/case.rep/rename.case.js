@@ -2,22 +2,18 @@
 [
     "date > tmp/1",
     "INIT",
-    "ADD",
     "COMMIT",
     "mv tmp/1 tmp/11",
-    "STATUS",
-    "ADD",
+    "GET_CHANGES",
     "COMMIT",
-    "STATUS",
+    "GET_CHANGES",
     "mkdir tmp/sub",
     "touch tmp/sub/2",
-    "ADD",
     "COMMIT",
     "mv tmp/sub/2 tmp/sub/22",
-    "STATUS",
-    "ADD",
+    "GET_CHANGES",
     "COMMIT",
-    "STATUS"
+    "GET_CHANGES"
 ]
 //out
 {"modified":[],"added":["11"],"deleted":["1"]}
