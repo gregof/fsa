@@ -1,8 +1,27 @@
 # fsa
 Утилита позволяющая быстро узнать были ли изменения в определенной папке. Характерным примером использования является кеширование результатов сборки кода, с последующей инкрементальной пересборкой только изменившегося кода. Работает поверх git, так что для работы утилиты требуется предустановленный git.
 
+## Оглавление
+ * [fsa.DirCache](#%D0%9A%D0%BB%D0%B0%D1%81%D1%81-fsadircache)
+  * [fsa.DirCachee(targetDir, cacheDirName)](#fsadircacheetargetdir-cachedirname) 
+  * [dc.load(callback)](#dcloadcallback)
+  * [dc.save(data, callback)](#dcsavedata-callback)
+  * [dc.remvoe(callback)](#dcremovecallback)
+ * [fsa.ChangeManager](#%D0%9A%D0%BB%D0%B0%D1%81%D1%81-fsachangemanager)
+  * [fsa.ChangeManager(changes)](#fsachangemanagerchanges)
+  * [cm.getFileStatus(fileName)](#cmgetfilestatusfilename)
+  * [cm.getAddedFiles()](#cmgetaddedfiles)
+  * [cm.getAddedDirs()](#cmgetaddeddirs)
+ * [fsa.rep](#fsarep)
+  * [fsa.rep.init(dir, [options], callback)](#fsarepinitdir-options-callback)
+  * [fsa.rep.getChanges(dir, [options], callback)](#fsarepgetchangesdir-options-callback)
+  * [fsa.rep.commit(dir, [options], callback)](#fsarepcommitdir-options-callback)
+  * [fsa.rep.getVersion(dir, [options], callback)](#fsarepgetversiondir-options-callback)
+  * [fsa.rep.execGitCommand(command, dir, [options], callback)](#fsarepexecgitcommandcommand-dir-options-callback)
+ * [Пример](#%D0%9F%D1%80%D0%B8%D0%BC%D0%B5%D1%80)
+
 ## Класс fsa.DirCache
-### new fsa.DirCachee(targetDir, cacheDirName)
+### fsa.DirCachee(targetDir, cacheDirName)
 Создает новый инстанс кеша для папки `targetDir`. Служебная информация кеша будет помещена в папку `cacheDirName` внутри папки `targetDir`.
 ```javascript
 var dc = new fsa.DirCache('test', '.exmpl');
@@ -37,7 +56,7 @@ dc.remove(function () {
 ```
 
 ## Класс fsa.ChangeManager
-### new fsa.ChangeManager(changes)
+### fsa.ChangeManager(changes)
 Создает объект упрощающий работу со списком изменений [`changes`](#fsarepgetchangespath-options-callback).
 ```javascript
 var cm = new fsa.ChangeManager(changes);
