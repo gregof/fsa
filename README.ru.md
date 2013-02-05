@@ -2,6 +2,7 @@
 Утилита позволяющая быстро узнать были ли изменения в определенной папке. Характерным примером использования является кеширование результатов сборки кода, с последующей инкрементальной пересборкой только изменившегося кода. Работает поверх git, так что для работы утилиты требуется предустановленный git.
 
 ## Оглавление
+ * [Пример](#%D0%9F%D1%80%D0%B8%D0%BC%D0%B5%D1%80)
  * [fsa.DirCache](#%D0%9A%D0%BB%D0%B0%D1%81%D1%81-fsadircache)
   * [fsa.DirCachee(targetDir, cacheDirName)](#fsadircacheetargetdir-cachedirname) 
   * [dc.load(callback)](#dcloadcallback)
@@ -18,7 +19,116 @@
   * [fsa.rep.commit(dir, [options], callback)](#fsarepcommitdir-options-callback)
   * [fsa.rep.getVersion(dir, [options], callback)](#fsarepgetversiondir-options-callback)
   * [fsa.rep.execGitCommand(command, dir, [options], callback)](#fsarepexecgitcommandcommand-dir-options-callback)
- * [Пример](#%D0%9F%D1%80%D0%B8%D0%BC%D0%B5%D1%80)
+
+##Пример
+В данном примере рассчитывается и выводится хеш для каждого файла в текущей папке.
+```javascript
+var fsa = require('fsa');
+var abc = require('abc');
+var crypto = require('crypto');
+var path = require('path');
+
+var startDate = new Date();
+var dc = new fsa.DirCache('.', '.exmpl');
+
+dc.load(function (data, changeManager) {
+    processDir(data, changeManager, function (newData) {
+        dc.save(newData, function () {
+            console.log(JSON.stringify(newData, null, '  '))
+            console.log('Done. Time - ' + (new Date() - startDate));
+        })
+    });
+});    
+
+function processDir (cachedData, changeManager, callback) {
+    var newData = [];
+    abc.async.forEach(
+        [
+            function (callback) {
+                if (cachedData) {
+                    checkCachedFiles(cachedData, changeManager, newData, callback)
+                } else {
+                    callback();
+                }
+            },
+            function (callback) {
+                readFiles(changeManager.getAddedFiles(), newData, callback)
+            },
+            function (callback) {
+                readDirs(changeManager.getAddedDirs(), newData, callback)
+            }
+        ], 
+        function () {
+            callback(newData);
+        }
+    );    
+}
+
+function checkCachedFiles (cachedData, changeManager, newData, callback) {
+    abc.async.forEach(
+        cachedData,
+        function (file, callback) {
+            var fileStatus = changeManager.getFileStatus(file.name);
+            if (fileStatus === 'M') {
+                readFile(file.name, function (rereadFile) {
+                    newData.push(rereadFile);
+                    callback();
+                })
+                return;
+            } else if (fileStatus === '-') {
+                newData.push(file);
+            }
+            callback();
+        },
+        callback
+    );
+}
+
+function readFile (file, callback) {
+    abc.file.read(file, function (text) {
+        callback({
+            name: file,
+            hash: crypto.createHash('md5').update(text).digest('hex')
+        });
+    })
+}
+
+function readFiles (files, newData, callback) {
+    abc.async.forEach(
+        files,
+        function (file, callback) {
+            readFile(file, function (readedFile) {
+                newData.push(readedFile);
+                callback();
+            })
+        },
+        callback
+    );
+}
+
+function readDirs (dirs, newData, callback) {
+    abc.async.forEach(
+        dirs,
+        function (dir, callback) {
+            readDir(dir, newData, callback);
+        },
+        callback
+    );
+}
+
+function readDir (dir, newData, callback) {
+    var newFiles = []
+    abc.find(
+        dir,
+        function (file, dirPath) {
+            newFiles.push(path.join(dirPath, file))
+        },
+        function () {
+            readFiles(newFiles, newData, callback);
+        }
+    );
+}
+```
 
 ## Класс fsa.DirCache
 ### fsa.DirCachee(targetDir, cacheDirName)
@@ -151,115 +261,5 @@ fsa.rep.getVersion('test', function (err, version) {
 this.execGitCommand('rm log.txt', 'test', function (err) {
   if (err) throw err;
   console.log('Файл log.txt удален.');
-}
-```
-
-##Пример
-В данном примере рассчитывается и выводится хеш для каждого файла в текущей папке.
-```javascript
-var fsa = require('fsa');
-var abc = require('abc');
-var crypto = require('crypto');
-var path = require('path');
-
-var startDate = new Date();
-var dc = new fsa.DirCache('.', '.exmpl');
-
-dc.load(function (data, changeManager) {
-    processDir(data, changeManager, function (newData) {
-        dc.save(newData, function () {
-            console.log(JSON.stringify(newData, null, '  '))
-            console.log('Done. Time - ' + (new Date() - startDate));
-        })
-    });
-});    
-
-function processDir (cachedData, changeManager, callback) {
-    var newData = [];
-    abc.async.forEach(
-        [
-            function (callback) {
-                if (cachedData) {
-                    checkCachedFiles(cachedData, changeManager, newData, callback)
-                } else {
-                    callback();
-                }
-            },
-            function (callback) {
-                readFiles(changeManager.getAddedFiles(), newData, callback)
-            },
-            function (callback) {
-                readDirs(changeManager.getAddedDirs(), newData, callback)
-            }
-        ], 
-        function () {
-            callback(newData);
-        }
-    );    
-}
-
-function checkCachedFiles (cachedData, changeManager, newData, callback) {
-    abc.async.forEach(
-        cachedData,
-        function (file, callback) {
-            var fileStatus = changeManager.getFileStatus(file.name);
-            if (fileStatus === 'M') {
-                readFile(file.name, function (rereadFile) {
-                    newData.push(rereadFile);
-                    callback();
-                })
-                return;
-            } else if (fileStatus === '-') {
-                newData.push(file);
-            }
-            callback();
-        },
-        callback
-    );
-}
-
-function readFile (file, callback) {
-    abc.file.read(file, function (text) {
-        callback({
-            name: file,
-            hash: crypto.createHash('md5').update(text).digest('hex')
-        });
-    })
-}
-
-function readFiles (files, newData, callback) {
-    abc.async.forEach(
-        files,
-        function (file, callback) {
-            readFile(file, function (readedFile) {
-                newData.push(readedFile);
-                callback();
-            })
-        },
-        callback
-    );
-}
-
-function readDirs (dirs, newData, callback) {
-    abc.async.forEach(
-        dirs,
-        function (dir, callback) {
-            readDir(dir, newData, callback);
-        },
-        callback
-    );
-}
-
-function readDir (dir, newData, callback) {
-    var newFiles = []
-    abc.find(
-        dir,
-        function (file, dirPath) {
-            newFiles.push(path.join(dirPath, file))
-        },
-        function () {
-            readFiles(newFiles, newData, callback);
-        }
-    );
 }
 ```
