@@ -10,6 +10,8 @@
   * [dc.remvoe(callback)](#dcremovecallback)
  * [fsa.ChangeManager](#%D0%9A%D0%BB%D0%B0%D1%81%D1%81-fsachangemanager)
   * [fsa.ChangeManager(changes)](#fsachangemanagerchanges)
+  * [cm.getChanges()](#cmgetchanges)
+  * [cm.isEmpty()](#cmisempty)
   * [cm.getFileStatus(fileName)](#cmgetfilestatusfilename)
   * [cm.getAddedFiles()](#cmgetaddedfiles)
   * [cm.getAddedDirs()](#cmgetaddeddirs)
@@ -171,6 +173,19 @@ dc.remove(function () {
 ```javascript
 var cm = new fsa.ChangeManager(changes);
 ```
+### cm.getChanges()
+Возвращает список изменений [`changes`](#fsarepgetchangespath-options-callback).
+```javascript
+console.log('Список изменений:');
+console.log(JSON.stringify(cm.getChanges(), null, '  ');
+```
+
+### cm.isEmpty()
+Возвращает `true`, если список изменений пустой, false - в противоположном случае.
+```javascript
+console.log(cm.isEmpty() ? 'Изменений нет.' : 'Есть изменения.')
+```
+
 ### cm.getFileStatus(fileName)
 Возвращает статус ранее закешированного файла. Возвращает строку 'D' если файл удален, 'M' если он изменился и '-' если остался без изменений.
 ```javascript
