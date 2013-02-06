@@ -6,7 +6,7 @@
     "url": "http://github.com/gregof"
   },
   "description": "File system auditor. Shows changes after previous audit session.",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "dependencies": {},
   "devDependencies": {
     "abc": "0.5.x",
