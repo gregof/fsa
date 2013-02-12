@@ -7,7 +7,7 @@
   * [fsa.DirCachee(targetDir, cacheDirName)](#fsadircacheetargetdir-cachedirname) 
   * [dc.load(callback)](#dcloadcallback)
   * [dc.save(data, callback)](#dcsavedata-callback)
-  * [dc.remvoe(callback)](#dcremovecallback)
+  * [dc.remove(callback)](#dcremovecallback)
  * [fsa.ChangeManager](#%D0%9A%D0%BB%D0%B0%D1%81%D1%81-fsachangemanager)
   * [fsa.ChangeManager(changes)](#fsachangemanagerchanges)
   * [cm.getChanges()](#cmgetchanges)
